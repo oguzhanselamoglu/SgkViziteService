@@ -55,14 +55,16 @@ namespace SgkViziteService.Services
         }
 
 
-        public async Task<ActionResponse<string>> RaporAramaTarihileAsync(string tarih)
+        public async Task<ActionResponse<List<RaporBeanDto>>>  RaporAramaTarihileAsync(string tarih)
         {
-            var response = await LogiAsyncn();
-            if (response.ResponseType == ResponseType.Error)
+            var response = ActionResponse<List<RaporBeanDto>>.Success(200);
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
             {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
                 return response;
             }
-
             var result = await _service.raporAramaTarihileAsync(new raporAramaTarihileRequest
             {
                 isyeriKodu = IsyeriKodu,
@@ -70,6 +72,8 @@ namespace SgkViziteService.Services
                 wsToken = Token,
                 tarih = tarih
             });
+            
+        
             if (result.raporAramaTarihileReturn.sonucKod != 0)
             {
                 
@@ -77,7 +81,33 @@ namespace SgkViziteService.Services
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
+            
+            
+            response.Data = result.raporAramaTarihileReturn.raporAramaTarihleBeanArray.Select(x => new RaporBeanDto
+            {
+                AD = x.AD,
+                SOYAD = x.SOYAD,
+                VAKA = x.VAKA,
+                ARSIV = x.ARSIV,
+                ABASTAR =x.ABASTAR,
+                ABITTAR = x.ABITTAR,
+                VAKAADI = x.VAKAADI,
+                
+                
+                TCKIMLIKNO =x.TCKIMLIKNO,
+                
+                RAPORDURUMU =x.RAPORDURUMU,
+                RAPORSIRANO=x.RAPORSIRANO,
+                ISBASKONTTAR=x.ISBASKONTTAR,
+                RAPORTAKIPNO=x.RAPORTAKIPNO,
+                YATRAPBASTAR=x.YATRAPBASTAR,
+                YATRAPBITTAR=x.YATRAPBITTAR,
+                MEDULARAPORID=x.MEDULARAPORID,
+                POLIKLINIKTAR=x.POLIKLINIKTAR,
+                DOGUMONCBASTAR=x.DOGUMONCBASTAR,
+                ISKAZASITARIHI=x.ISKAZASITARIHI,
 
+            }).ToList();
             return response;
         }
 
@@ -105,11 +135,14 @@ namespace SgkViziteService.Services
             return response;
         }
 
-        public async Task<ActionResponse<string>> RaporAramaKimlikNoAsync(string tckNo)
+        public async Task<ActionResponse<List<RaporBeanDto>>> RaporAramaKimlikNoAsync(string tckNo)
         {
-            var response = await LogiAsyncn();
-            if (response.ResponseType == ResponseType.Error)
+            var response = ActionResponse<List<RaporBeanDto>>.Success(200);
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
             {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
                 return response;
             }
             var result = await _service.raporAramaKimlikNoAsync(new ViziteGonderService.raporAramaKimlikNoRequest
@@ -125,7 +158,36 @@ namespace SgkViziteService.Services
                 response.ResponseType= ResponseType.Error;
                 return response;
             }
-           
+
+            response.Data = result.raporAramaKimlikNoReturn.raporBeanArray.Select(x => new RaporBeanDto
+            {
+                AD = x.AD,
+                SOYAD = x.SOYAD,
+                VAKA = x.VAKA,
+                ARSIV = x.ARSIV,
+                ABASTAR =x.ABASTAR,
+                ABITTAR = x.ABITTAR,
+                VAKAADI = x.VAKAADI,
+                TESISADI = x.TESISADI,
+                TESISKODU= x.TESISKODU,
+                TCKIMLIKNO =x.TCKIMLIKNO,
+                RAPORBITTAR = x.RAPORBITTAR,
+                RAPORDURUMU =x.RAPORDURUMU,
+                RAPORSIRANO=x.RAPORSIRANO,
+                ISBASKONTTAR=x.ISBASKONTTAR,
+                RAPORTAKIPNO=x.RAPORTAKIPNO,
+                YATRAPBASTAR=x.YATRAPBASTAR,
+                YATRAPBITTAR=x.YATRAPBITTAR,
+                MEDULARAPORID=x.MEDULARAPORID,
+                POLIKLINIKTAR=x.POLIKLINIKTAR,
+                DOGUMONCBASTAR=x.DOGUMONCBASTAR,
+                ISKAZASITARIHI=x.ISKAZASITARIHI,
+                BASHEKIMONAYTARIHI=x.BASHEKIMONAYTARIHI,
+                ISVERENEBILDIRILDIGITARIH=x.ISVERENEBILDIRILDIGITARIH,
+                
+                
+
+            }).ToList();
             return response;
         }
 

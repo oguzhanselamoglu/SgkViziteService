@@ -56,12 +56,16 @@ app.MapGet("/isyeriGoruntu", async (SgkService _service) =>
     var response = await _service.IsverenIletisimBilgileriGoruntuAsync();
     return response;
 }).WithName("isyeriGoruntu").WithOpenApi();
-app.MapGet("/Raporarama", async (string tckNo, SgkService _service) =>
+app.MapGet("/RaporAramaKimlikNo", async (string tckNo, SgkService _service) =>
 {
     var response = await _service.RaporAramaKimlikNoAsync(tckNo);
     return response;
-}).WithName("Raporarama").WithOpenApi();
-
+}).WithName("RaporAramaKimlikNo").WithOpenApi();
+app.MapGet("/RaporAramaTarihile", async (string tarih, SgkService _service) =>
+{
+    var response = await _service.RaporAramaTarihileAsync(tarih);
+    return response;
+}).WithName("RaporAramaTarihile").WithOpenApi();
 app.Run();
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
