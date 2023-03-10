@@ -1,5 +1,6 @@
 ﻿using SgkViziteService.Models;
 using System.ServiceModel;
+using ViziteGonderService;
 
 namespace SgkViziteService.Services
 {
@@ -47,14 +48,38 @@ namespace SgkViziteService.Services
                 response.Message = result.wsLoginReturn.sonucAciklama;
                 response.ResponseType = ResponseType.Error;
                 return response;
-               
+             
             }
             Token = response.Data = result.wsLoginReturn.wsToken;
             return response;
         }
 
-     
 
+        public async Task<ActionResponse<string>> RaporAramaTarihileAsync(string tarih)
+        {
+            var response = await LogiAsyncn();
+            if (response.ResponseType == ResponseType.Error)
+            {
+                return response;
+            }
+
+            var result = await _service.raporAramaTarihileAsync(new raporAramaTarihileRequest
+            {
+                isyeriKodu = IsyeriKodu,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                tarih = tarih
+            });
+            if (result.raporAramaTarihileReturn.sonucKod != 0)
+            {
+                
+                response.Message = result.raporAramaTarihileReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
+            return response;
+        }
 
         public async Task<ActionResponse<string>> IsverenIletisimBilgileriGoruntuAsync()
         {
