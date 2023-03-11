@@ -73,7 +73,7 @@ namespace SgkViziteService.Services
                 tarih = tarih
             });
             
-        
+       
             if (result.raporAramaTarihileReturn.sonucKod != 0)
             {
                 
@@ -191,6 +191,28 @@ namespace SgkViziteService.Services
             return response;
         }
 
-
+        public async Task<ActionResponse<string>> RaporOnayAsync(string tckNo,string tarih,string vaka,string nitelikDurumu,string medulaRaporId)
+        {
+            var response = ActionResponse<string>.Success(200);
+            var result = await _service.raporOnayAsync(new raporOnayRequest
+            {
+                tckNo = tckNo,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                isyeriKodu = IsyeriKodu,
+                tarih = tarih,
+                vaka = vaka,
+                nitelikDurumu = nitelikDurumu,
+                medulaRaporId = medulaRaporId
+            });
+            if (result.raporOnayReturn.sonucKod != 0)
+            {
+                response.Message = result.raporOnayReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+            
+            return response;
+        }
     }
 }
