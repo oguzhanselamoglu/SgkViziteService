@@ -194,6 +194,14 @@ namespace SgkViziteService.Services
         public async Task<ActionResponse<string>> RaporOnayAsync(string tckNo,string tarih,string vaka,string nitelikDurumu,string medulaRaporId)
         {
             var response = ActionResponse<string>.Success(200);
+            
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
+            {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
             var result = await _service.raporOnayAsync(new raporOnayRequest
             {
                 tckNo = tckNo,

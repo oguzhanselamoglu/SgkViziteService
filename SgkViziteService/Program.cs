@@ -66,6 +66,14 @@ app.MapGet("/RaporAramaTarihile", async (string tarih, SgkService _service) =>
     var response = await _service.RaporAramaTarihileAsync(tarih);
     return response;
 }).WithName("RaporAramaTarihile").WithOpenApi();
+
+app.MapGet("/RaporOnay", async (string tckNo,string tarih,string vaka,string nitelikDurumu,string medulaRaporId, SgkService _service) =>
+{
+    var response = await _service.RaporOnayAsync(tckNo,tarih,vaka,nitelikDurumu,medulaRaporId);
+    return response;
+}).WithName("RaporOnay").WithOpenApi();
+
+
 app.Run();
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
