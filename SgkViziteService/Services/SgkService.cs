@@ -6,7 +6,6 @@ namespace SgkViziteService.Services
 {
     public class SgkService
     {
-
         public EndpointAddress endpointAddress;
         public BasicHttpBinding basicHttpBinding;
         private readonly ViziteGonderService.ViziteGonderClient _service;
@@ -14,6 +13,7 @@ namespace SgkViziteService.Services
         public string IsyeriKodu { get; set; }
         public string IsyeriSifresi { get; set; }
         public string KullaniciAdi { get; set; }
+
         public SgkService(string url, string kullaniciAdi, string isyeriKodu, string isyeriSifresi)
         {
             endpointAddress = new EndpointAddress(url);
@@ -32,9 +32,8 @@ namespace SgkViziteService.Services
             IsyeriSifresi = isyeriSifresi;
         }
 
-        public async Task<ActionResponse<string>> LogiAsyncn() 
+        public async Task<ActionResponse<string>> LogiAsyncn()
         {
-
             var response = ActionResponse<string>.Success(200);
 
             var result = await _service.wsLoginAsync(new ViziteGonderService.wsLoginRequest
@@ -43,19 +42,19 @@ namespace SgkViziteService.Services
                 isyeriSifresi = IsyeriSifresi,
                 kullaniciAdi = KullaniciAdi
             });
-            if (result.wsLoginReturn.sonucKod !=0)
+            if (result.wsLoginReturn.sonucKod != 0)
             {
                 response.Message = result.wsLoginReturn.sonucAciklama;
                 response.ResponseType = ResponseType.Error;
                 return response;
-             
             }
+
             Token = response.Data = result.wsLoginReturn.wsToken;
             return response;
         }
 
 
-        public async Task<ActionResponse<List<RaporBeanDto>>>  RaporAramaTarihileAsync(string tarih)
+        public async Task<ActionResponse<List<RaporBeanDto>>> RaporAramaTarihileAsync(string tarih)
         {
             var response = ActionResponse<List<RaporBeanDto>>.Success(200);
             var loginResponse = await LogiAsyncn();
@@ -65,6 +64,7 @@ namespace SgkViziteService.Services
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
+
             var result = await _service.raporAramaTarihileAsync(new raporAramaTarihileRequest
             {
                 isyeriKodu = IsyeriKodu,
@@ -72,41 +72,39 @@ namespace SgkViziteService.Services
                 wsToken = Token,
                 tarih = tarih
             });
-            
-       
+
+
             if (result.raporAramaTarihileReturn.sonucKod != 0)
             {
-                
                 response.Message = result.raporAramaTarihileReturn.sonucAciklama;
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
-            
-            
+
+
             response.Data = result.raporAramaTarihileReturn.raporAramaTarihleBeanArray.Select(x => new RaporBeanDto
             {
                 AD = x.AD,
                 SOYAD = x.SOYAD,
                 VAKA = x.VAKA,
                 ARSIV = x.ARSIV,
-                ABASTAR =x.ABASTAR,
+                ABASTAR = x.ABASTAR,
                 ABITTAR = x.ABITTAR,
                 VAKAADI = x.VAKAADI,
-                
-                
-                TCKIMLIKNO =x.TCKIMLIKNO,
-                
-                RAPORDURUMU =x.RAPORDURUMU,
-                RAPORSIRANO=x.RAPORSIRANO,
-                ISBASKONTTAR=x.ISBASKONTTAR,
-                RAPORTAKIPNO=x.RAPORTAKIPNO,
-                YATRAPBASTAR=x.YATRAPBASTAR,
-                YATRAPBITTAR=x.YATRAPBITTAR,
-                MEDULARAPORID=x.MEDULARAPORID,
-                POLIKLINIKTAR=x.POLIKLINIKTAR,
-                DOGUMONCBASTAR=x.DOGUMONCBASTAR,
-                ISKAZASITARIHI=x.ISKAZASITARIHI,
 
+
+                TCKIMLIKNO = x.TCKIMLIKNO,
+
+                RAPORDURUMU = x.RAPORDURUMU,
+                RAPORSIRANO = x.RAPORSIRANO,
+                ISBASKONTTAR = x.ISBASKONTTAR,
+                RAPORTAKIPNO = x.RAPORTAKIPNO,
+                YATRAPBASTAR = x.YATRAPBASTAR,
+                YATRAPBITTAR = x.YATRAPBITTAR,
+                MEDULARAPORID = x.MEDULARAPORID,
+                POLIKLINIKTAR = x.POLIKLINIKTAR,
+                DOGUMONCBASTAR = x.DOGUMONCBASTAR,
+                ISKAZASITARIHI = x.ISKAZASITARIHI,
             }).ToList();
             return response;
         }
@@ -119,19 +117,20 @@ namespace SgkViziteService.Services
                 return response;
             }
 
-            var result = await _service.isverenIletisimBilgileriGoruntuAsync(new ViziteGonderService.isverenIletisimBilgileriGoruntuRequest
-            {
-                wsToken = Token,
-                isyeriKodu = IsyeriKodu,
-                kullaniciAdi = KullaniciAdi
-            });
+            var result = await _service.isverenIletisimBilgileriGoruntuAsync(
+                new ViziteGonderService.isverenIletisimBilgileriGoruntuRequest
+                {
+                    wsToken = Token,
+                    isyeriKodu = IsyeriKodu,
+                    kullaniciAdi = KullaniciAdi
+                });
 
             if (result.isverenIletisimBilgileriGoruntuReturn.sonucKod != 0)
             {
                 response.Message = result.isverenIletisimBilgileriGoruntuReturn.sonucAciklama;
                 response.ResponseType = ResponseType.Error;
             }
-           
+
             return response;
         }
 
@@ -145,6 +144,7 @@ namespace SgkViziteService.Services
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
+
             var result = await _service.raporAramaKimlikNoAsync(new ViziteGonderService.raporAramaKimlikNoRequest
             {
                 isyeriKodu = IsyeriKodu,
@@ -155,7 +155,7 @@ namespace SgkViziteService.Services
             if (result.raporAramaKimlikNoReturn.sonucKod != 0)
             {
                 response.Message = result.raporAramaKimlikNoReturn.sonucAciklama;
-                response.ResponseType= ResponseType.Error;
+                response.ResponseType = ResponseType.Error;
                 return response;
             }
 
@@ -165,36 +165,34 @@ namespace SgkViziteService.Services
                 SOYAD = x.SOYAD,
                 VAKA = x.VAKA,
                 ARSIV = x.ARSIV,
-                ABASTAR =x.ABASTAR,
+                ABASTAR = x.ABASTAR,
                 ABITTAR = x.ABITTAR,
                 VAKAADI = x.VAKAADI,
                 TESISADI = x.TESISADI,
-                TESISKODU= x.TESISKODU,
-                TCKIMLIKNO =x.TCKIMLIKNO,
+                TESISKODU = x.TESISKODU,
+                TCKIMLIKNO = x.TCKIMLIKNO,
                 RAPORBITTAR = x.RAPORBITTAR,
-                RAPORDURUMU =x.RAPORDURUMU,
-                RAPORSIRANO=x.RAPORSIRANO,
-                ISBASKONTTAR=x.ISBASKONTTAR,
-                RAPORTAKIPNO=x.RAPORTAKIPNO,
-                YATRAPBASTAR=x.YATRAPBASTAR,
-                YATRAPBITTAR=x.YATRAPBITTAR,
-                MEDULARAPORID=x.MEDULARAPORID,
-                POLIKLINIKTAR=x.POLIKLINIKTAR,
-                DOGUMONCBASTAR=x.DOGUMONCBASTAR,
-                ISKAZASITARIHI=x.ISKAZASITARIHI,
-                BASHEKIMONAYTARIHI=x.BASHEKIMONAYTARIHI,
-                ISVERENEBILDIRILDIGITARIH=x.ISVERENEBILDIRILDIGITARIH,
-                
-                
-
+                RAPORDURUMU = x.RAPORDURUMU,
+                RAPORSIRANO = x.RAPORSIRANO,
+                ISBASKONTTAR = x.ISBASKONTTAR,
+                RAPORTAKIPNO = x.RAPORTAKIPNO,
+                YATRAPBASTAR = x.YATRAPBASTAR,
+                YATRAPBITTAR = x.YATRAPBITTAR,
+                MEDULARAPORID = x.MEDULARAPORID,
+                POLIKLINIKTAR = x.POLIKLINIKTAR,
+                DOGUMONCBASTAR = x.DOGUMONCBASTAR,
+                ISKAZASITARIHI = x.ISKAZASITARIHI,
+                BASHEKIMONAYTARIHI = x.BASHEKIMONAYTARIHI,
+                ISVERENEBILDIRILDIGITARIH = x.ISVERENEBILDIRILDIGITARIH,
             }).ToList();
             return response;
         }
 
-        public async Task<ActionResponse<string>> RaporOnayAsync(string tckNo,string tarih,string vaka,string nitelikDurumu,string medulaRaporId)
+        public async Task<ActionResponse<string>> PersonelimDegildirAsync(string tckNo, string tarih, string vaka,
+            string nitelikDurumu, string medulaRaporId)
         {
             var response = ActionResponse<string>.Success(200);
-            
+
             var loginResponse = await LogiAsyncn();
             if (loginResponse.ResponseType == ResponseType.Error)
             {
@@ -202,6 +200,41 @@ namespace SgkViziteService.Services
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
+
+            var result = await _service.personelimDegildirAsync(new personelimDegildirRequest
+            {
+                medulaRaporId = medulaRaporId,
+                vaka = vaka,
+                isyeriKodu = IsyeriKodu,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                tckNo = tckNo
+            });
+            if (result.personelimDegildirReturn.sonucKod != 0)
+            {
+                response.Message = result.personelimDegildirReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
+            response.Data = result.personelimDegildirReturn.sonucAciklama;
+
+            return response;
+        }
+
+        public async Task<ActionResponse<string>> RaporOnayAsync(string tckNo, string tarih, string vaka,
+            string nitelikDurumu, string medulaRaporId)
+        {
+            var response = ActionResponse<string>.Success(200);
+
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
+            {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
             var result = await _service.raporOnayAsync(new raporOnayRequest
             {
                 tckNo = tckNo,
@@ -219,7 +252,8 @@ namespace SgkViziteService.Services
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
-            
+
+            response.Data = result.raporOnayReturn.sonucAciklama;
             return response;
         }
     }
