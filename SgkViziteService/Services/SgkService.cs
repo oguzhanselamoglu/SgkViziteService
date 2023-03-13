@@ -130,7 +130,7 @@ namespace SgkViziteService.Services
                 response.Message = result.isverenIletisimBilgileriGoruntuReturn.sonucAciklama;
                 response.ResponseType = ResponseType.Error;
             }
-
+            
             return response;
         }
 
@@ -185,6 +185,35 @@ namespace SgkViziteService.Services
                 BASHEKIMONAYTARIHI = x.BASHEKIMONAYTARIHI,
                 ISVERENEBILDIRILDIGITARIH = x.ISVERENEBILDIRILDIGITARIH,
             }).ToList();
+            return response;
+        }
+
+        public async Task<ActionResponse<string>> RaporOkunduKapatAsync(string medulaRaporId)
+        {
+            
+            var response = await LogiAsyncn();
+            if (response.ResponseType == ResponseType.Error)
+            {
+                return response;
+            }
+
+            var result = await _service.raporOkunduKapatAsync(new raporOkunduKapatRequest
+            {
+                isyeriKodu = IsyeriKodu,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                medulaRaporId = medulaRaporId
+            });
+            if (result.raporOkunduKapatReturn.sonucKod != 0)
+            {
+                response.Message = result.raporOkunduKapatReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
+            response.Data = result.raporOkunduKapatReturn.sonucAciklama;
+
+
             return response;
         }
 
