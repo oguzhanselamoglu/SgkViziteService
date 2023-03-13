@@ -243,7 +243,7 @@ namespace SgkViziteService.Services
                 return response;
             }
 
-            result.onayliRaporlarDetayReturn.onayliRaporDetayBean.Select(x => new OnayliRaporDetay
+            response.Data = result.onayliRaporlarDetayReturn.onayliRaporDetayBean.Select(x => new OnayliRaporDetay
             {
                 BASTAR = x.BASTAR,
                 BITTAR = x.BITTAR,
@@ -252,7 +252,7 @@ namespace SgkViziteService.Services
                 MEDULARAPOR_ID = x.MEDULARAPOR_ID,
                 ODEMECIKTIMI = x.ODEMECIKTIMI,
                 CALISTI_CALISMADI = x.CALISTI_CALISMADI
-            });
+            }).ToList();
             
             
             return response;
@@ -292,6 +292,38 @@ namespace SgkViziteService.Services
             return response;
         }
 
+        public async Task<ActionResponse<string>> OnaylIptalAsync(string medulaRaporId, string bildirimId)
+        {
+            var response = ActionResponse<string>.Success(200);
+
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
+            {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
+            var result = await _service.onaylIptalAsync(new onaylIptalRequest
+            {
+                isyeriKodu = IsyeriKodu,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                medulaRaporId = medulaRaporId,
+                bildirimId = bildirimId
+            });
+            if (result.onaylIptalReturn.sonucKod != 0)
+            {
+                response.Message = result.onaylIptalReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
+            response.Data = result.onaylIptalReturn.sonucAciklama;
+
+            return response;
+        }
+
         public async Task<ActionResponse<List<OnayliRaporDto>>> OnayliRaporlarTarihileAsync(string tarih1, string tarih2)
         {
             var response = ActionResponse<List<OnayliRaporDto>>.Success(200);
@@ -320,20 +352,21 @@ namespace SgkViziteService.Services
                 return response;
             }
 
-            result.onayliRaporlarTarihileReturn.onayliRaporlarTarihleBeanArray.Select(x => new OnayliRaporDto
-            {
-                AD = x.AD,
-                SOYAD = x.SOYAD,
-                VAKA = x.VAKA,
-                VAKAADI = x.VAKAADI,
-                TCKIMLIKNO = x.TCKIMLIKNO,
-                RAPORSIRANO = x.RAPORSIRANO,
-                ISBASKONTTAR = x.ISBASKONTTAR,
-                RAPORTAKIPNO = x.RAPORTAKIPNO,
-                MEDULARAPORID = x.MEDULARAPORID,
-                POLIKLINIKTAR = x.POLIKLINIKTAR,
-                ISKAZASITARIHI = x.ISKAZASITARIHI
-            });
+            response.Data = result.onayliRaporlarTarihileReturn.onayliRaporlarTarihleBeanArray.Select(x =>
+                new OnayliRaporDto
+                {
+                    AD = x.AD,
+                    SOYAD = x.SOYAD,
+                    VAKA = x.VAKA,
+                    VAKAADI = x.VAKAADI,
+                    TCKIMLIKNO = x.TCKIMLIKNO,
+                    RAPORSIRANO = x.RAPORSIRANO,
+                    ISBASKONTTAR = x.ISBASKONTTAR,
+                    RAPORTAKIPNO = x.RAPORTAKIPNO,
+                    MEDULARAPORID = x.MEDULARAPORID,
+                    POLIKLINIKTAR = x.POLIKLINIKTAR,
+                    ISKAZASITARIHI = x.ISKAZASITARIHI
+                }).ToList();
 
             return response;
         }
