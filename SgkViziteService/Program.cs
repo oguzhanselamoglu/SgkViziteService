@@ -73,6 +73,11 @@ app.MapGet("/RaporOnay", async (string tckNo,string tarih,string vaka,string nit
     return response;
 }).WithName("RaporOnay").WithOpenApi();
 
+app.MapGet("/OnayliRaporlarDetay", async (string medulaRaporId, SgkService _service) =>
+{
+    var response = await _service.OnayliRaporlarDetayAsync(medulaRaporId);
+    return response;
+}).WithName("OnayliRaporlarDetay").WithOpenApi();
 
 app.Run();
 

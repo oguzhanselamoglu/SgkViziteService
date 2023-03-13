@@ -217,6 +217,31 @@ namespace SgkViziteService.Services
             return response;
         }
 
+        public async Task<ActionResponse<string>> OnayliRaporlarDetayAsync(string medulaRaporId)
+        {
+            var response = await LogiAsyncn();
+            if (response.ResponseType == ResponseType.Error)
+            {
+                return response;
+            }
+
+            var result = await _service.onayliRaporlarDetayAsync(new onayliRaporlarDetayRequest
+            {
+                isyeriKodu = IsyeriKodu,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                medulaRaporId = medulaRaporId
+            });
+            if (result.onayliRaporlarDetayReturn.sonucKod != 0)
+            {
+                response.Message = result.onayliRaporlarDetayReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+            
+            return response;
+        }
+
         public async Task<ActionResponse<string>> PersonelimDegildirAsync(string tckNo, string tarih, string vaka,
             string nitelikDurumu, string medulaRaporId)
         {
