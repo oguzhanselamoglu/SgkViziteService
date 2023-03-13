@@ -217,11 +217,15 @@ namespace SgkViziteService.Services
             return response;
         }
 
-        public async Task<ActionResponse<string>> OnayliRaporlarDetayAsync(string medulaRaporId)
+        public async Task<ActionResponse<List<OnayliRaporDetay>>> OnayliRaporlarDetayAsync(string medulaRaporId)
         {
-            var response = await LogiAsyncn();
-            if (response.ResponseType == ResponseType.Error)
+            var response = ActionResponse<List<OnayliRaporDetay>>.Success(200);
+
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
             {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
                 return response;
             }
 
@@ -238,6 +242,18 @@ namespace SgkViziteService.Services
                 response.ResponseType = ResponseType.Error;
                 return response;
             }
+
+            result.onayliRaporlarDetayReturn.onayliRaporDetayBean.Select(x => new OnayliRaporDetay
+            {
+                BASTAR = x.BASTAR,
+                BITTAR = x.BITTAR,
+                BILDIRIM_ID = x.BILDIRIM_ID,
+                ISLEM_TARIHI = x.ISLEM_TARIHI,
+                MEDULARAPOR_ID = x.MEDULARAPOR_ID,
+                ODEMECIKTIMI = x.ODEMECIKTIMI,
+                CALISTI_CALISMADI = x.CALISTI_CALISMADI
+            });
+            
             
             return response;
         }
@@ -272,6 +288,52 @@ namespace SgkViziteService.Services
             }
 
             response.Data = result.personelimDegildirReturn.sonucAciklama;
+
+            return response;
+        }
+
+        public async Task<ActionResponse<List<OnayliRaporDto>>> OnayliRaporlarTarihileAsync(string tarih1, string tarih2)
+        {
+            var response = ActionResponse<List<OnayliRaporDto>>.Success(200);
+
+            var loginResponse = await LogiAsyncn();
+            if (loginResponse.ResponseType == ResponseType.Error)
+            {
+                response.Message = loginResponse.Message;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+            
+            var result = await _service.onayliRaporlarTarihileAsync(new onayliRaporlarTarihileRequest
+            {
+                isyeriKodu = IsyeriKodu,
+                kullaniciAdi = KullaniciAdi,
+                wsToken = Token,
+                tarih1 = tarih1,
+                tarih2 = tarih2
+            });
+
+            if (result.onayliRaporlarTarihileReturn.sonucKod != 0)
+            {
+                response.Message = result.onayliRaporlarTarihileReturn.sonucAciklama;
+                response.ResponseType = ResponseType.Error;
+                return response;
+            }
+
+            result.onayliRaporlarTarihileReturn.onayliRaporlarTarihleBeanArray.Select(x => new OnayliRaporDto
+            {
+                AD = x.AD,
+                SOYAD = x.SOYAD,
+                VAKA = x.VAKA,
+                VAKAADI = x.VAKAADI,
+                TCKIMLIKNO = x.TCKIMLIKNO,
+                RAPORSIRANO = x.RAPORSIRANO,
+                ISBASKONTTAR = x.ISBASKONTTAR,
+                RAPORTAKIPNO = x.RAPORTAKIPNO,
+                MEDULARAPORID = x.MEDULARAPORID,
+                POLIKLINIKTAR = x.POLIKLINIKTAR,
+                ISKAZASITARIHI = x.ISKAZASITARIHI
+            });
 
             return response;
         }
