@@ -67,11 +67,12 @@ app.MapGet("/RaporAramaTarihile", async (string tarih, SgkService _service) =>
     return response;
 }).WithName("RaporAramaTarihile").WithOpenApi();
 
-app.MapGet("/RaporOnay", async (string tckNo,string tarih,string vaka,string nitelikDurumu,string medulaRaporId, SgkService _service) =>
-{
-    var response = await _service.RaporOnayAsync(tckNo,tarih,vaka,nitelikDurumu,medulaRaporId);
-    return response;
-}).WithName("RaporOnay").WithOpenApi();
+app.MapGet("/RaporOnay",
+    async (string tckNo, string tarih, string vaka, string nitelikDurumu, string medulaRaporId, SgkService _service) =>
+    {
+        var response = await _service.RaporOnayAsync(tckNo, tarih, vaka, nitelikDurumu, medulaRaporId);
+        return response;
+    }).WithName("RaporOnay").WithOpenApi();
 
 app.MapGet("/OnayliRaporlarDetay", async (string medulaRaporId, SgkService _service) =>
 {
@@ -79,9 +80,9 @@ app.MapGet("/OnayliRaporlarDetay", async (string medulaRaporId, SgkService _serv
     return response;
 }).WithName("OnayliRaporlarDetay").WithOpenApi();
 
-app.MapGet("/OnayliRaporlar", async (string tarih1,string tarih2, SgkService _service) =>
+app.MapGet("/OnayliRaporlar", async (string tarih1, string tarih2, SgkService _service) =>
 {
-    var response = await _service.OnayliRaporlarTarihileAsync(tarih1,tarih2);
+    var response = await _service.OnayliRaporlarTarihileAsync(tarih1, tarih2);
     return response;
 }).WithName("OnayliRaporlar").WithOpenApi();
 
@@ -90,6 +91,13 @@ app.MapGet("/RaporOkunduKapat", async (string medulaRaporId, SgkService _service
     var response = await _service.RaporOkunduKapatAsync(medulaRaporId);
     return response;
 }).WithName("RaporOkunduKapat").WithOpenApi();
+
+
+app.MapGet("/OnaylIptal", async (string medulaRaporId, string bildirimId, SgkService _service) =>
+{
+    var response = await _service.OnaylIptalAsync(medulaRaporId, bildirimId);
+    return response;
+}).WithName("OnaylIptal").WithOpenApi();
 app.Run();
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
